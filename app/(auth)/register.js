@@ -41,17 +41,14 @@ return;
 }
 
 try{
+const BASE_URL = "https://smart-campus-api-j6dd.onrender.com";
 
-const response = await fetch("http://192.168.43.189:5000/register",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-name:name,
-email:email,
-password:password
-})
+const response = await fetch(`${BASE_URL}/register`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ name, email, password })
 });
 
 const data = await response.json();

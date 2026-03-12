@@ -31,7 +31,7 @@ export default function Announcements() {
 
     try {
 
-      const response = await fetch("http://192.168.43.189:5000/announcements");
+      const response = await fetch("https://smart-campus-api-j6dd.onrender.com");
       const data = await response.json();
 
       setAnnouncements(data);
