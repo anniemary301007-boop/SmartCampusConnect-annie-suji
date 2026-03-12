@@ -20,109 +20,114 @@ app.get("/", (req, res) => {
   res.send("Smart Campus Backend Running");
 });
 
-
 app.post("/register", async (req, res) => {
 
-const { name, email, password } = req.body;
+  const { name, email, password } = req.body;
 
-try {
+  try {
 
-const result = await pool.query(
-"INSERT INTO users(name,email,password,role) VALUES($1,$2,$3,$4) RETURNING *",
-[name,email,password,"student"]
-);
+    const result = await pool.query(
+      "INSERT INTO users(name,email,password,role) VALUES($1,$2,$3,$4) RETURNING *",
+      [name,email,password,"student"]
+    );
 
-res.json({
-success:true,
-user:result.rows[0]
+    res.json({
+      success:true,
+      user:result.rows[0]
+    });
+
+  } catch(error){
+
+    console.log(error);
+    res.status(500).json({error:error.message});
+
+  }
+
 });
 
-} catch(error){
-
-console.log(error);
-res.status(500).json({error:error.message});
-
-}
-
-});
 app.post("/login", async (req, res) => {
 
-const { email, password } = req.body;
+  const { email, password } = req.body;
 
-try{
+  try{
 
-const result = await pool.query(
-"SELECT * FROM users WHERE email=$1 AND password=$2",
-[email,password]
-);
+    const result = await pool.query(
+      "SELECT * FROM users WHERE email=$1 AND password=$2",
+      [email,password]
+    );
 
-if(result.rows.length > 0){
+    if(result.rows.length > 0){
 
-res.json({
-success:true,
-user:result.rows[0]
+      res.json({
+        success:true,
+        user:result.rows[0]
+      });
+
+    }else{
+
+      res.json({
+        success:false,
+        message:"Invalid email or password"
+      });
+
+    }
+
+  }catch(error){
+
+    console.log(error);
+    res.status(500).json({error:error.message});
+
+  }
+
 });
 
-}else{
-
-res.json({
-success:false,
-message:"Invalid email or password"
-});
-
-}
-
-}catch(error){
-
-console.log(error);
-res.status(500).json({error:error.message});
-
-}
-
-});
 app.post("/announcement", async (req, res) => {
 
-const { title, message } = req.body;
+  const { title, message } = req.body;
 
-try{
+  try{
 
-const result = await pool.query(
-"INSERT INTO announcements(title,message) VALUES($1,$2) RETURNING *",
-[title,message]
-);
+    const result = await pool.query(
+      "INSERT INTO announcements(title,message) VALUES($1,$2) RETURNING *",
+      [title,message]
+    );
 
-res.json({
-success:true,
-data:result.rows[0]
+    res.json({
+      success:true,
+      data:result.rows[0]
+    });
+
+  }catch(error){
+
+    console.log(error);
+    res.status(500).json({error:error.message});
+
+  }
+
 });
 
-}catch(error){
-
-console.log(error);
-res.status(500).json({error:error.message});
-
-}
-
-});
 app.get("/announcements", async (req, res) => {
 
-try{
+  try{
 
-const result = await pool.query(
-"SELECT * FROM announcements ORDER BY created_at DESC"
-);
+    const result = await pool.query(
+      "SELECT * FROM announcements ORDER BY created_at DESC"
+    );
 
-res.json(result.rows);
+    res.json(result.rows);
 
-}catch(error){
+  }catch(error){
 
-console.log(error);
-res.status(500).json({error:error.message});
+    console.log(error);
+    res.status(500).json({error:error.message});
 
-}
+  }
 
 });
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
