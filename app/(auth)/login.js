@@ -30,50 +30,44 @@ duration:1200,
 useNativeDriver:true
 }).start();
 },[]);
-
 const handleLogin = async () => {
+  if (!email || !password) {
+    alert("Enter email and password");
+    return;
+  }
 
-if(!email || !password){
-alert("Enter email and password");
-return;
-}
+  try {
+    const BASE_URL = "https://smart-campus-api-j6dd.onrender.com";
 
-try{
+    // ✅ Use /login endpoint here
+    const response = await fetch(`${BASE_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    });
 
-const BASE_URL = "https://smart-campus-api-j6dd.onrender.com";
+    const data = await response.json();
 
-const response = await fetch(`${BASE_URL}/register`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-body:JSON.stringify({
-email:email,
-password:password
-})
-});
+    if (data.success) {
+      if (data.user.role === "admin") {
+        router.replace("/adminDashboard");
+      } else {
+        router.replace("/home");
+      }
+    } else {
+      alert("Invalid email or password");
+    }
 
-const data = await response.json();
-
-if(data.success){
-
-if(data.user.role === "admin"){
-router.replace("/adminDashboard");
-}else{
-router.replace("/home");
-}
-
-}else{
-alert("Invalid email or password");
-}
-
-}catch(error){
-console.log(error);
-alert("Login failed");
-}
-
+  } catch (error) {
+    console.log(error);
+    alert("Login failed");
+  }
 };
-
 return(
 
 <LinearGradient

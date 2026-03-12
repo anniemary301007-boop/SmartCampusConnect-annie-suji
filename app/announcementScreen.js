@@ -7,7 +7,7 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
-
+const BASE_URL = "https://smart-campus-api-j6dd.onrender.com";
 export default function AnnouncementScreen(){
 
 const [title,setTitle] = useState("");
@@ -22,13 +22,11 @@ return;
 
 try{
 
-const BASE_URL = "https://smart-campus-api-j6dd.onrender.com";
-
-const response = await fetch(`${BASE_URL}/register`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
+const response = await fetch(`${BASE_URL}/announcement`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
 body:JSON.stringify({
 title:title,
 message:message
