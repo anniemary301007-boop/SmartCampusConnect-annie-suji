@@ -24,17 +24,17 @@ app.get("/", (req, res) => {
 
 // ----------------- REGISTER -----------------
 app.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password,regNo } = req.body;
 
   try {
     // Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await pool.query(
-      "INSERT INTO users(name,email,password,role) VALUES($1,$2,$3,$4) RETURNING *",
-      [name, email, hashedPassword, "student"]
+      "INSERT INTO users(name,email,password,role,regNo) VALUES($1,$2,$3,$4,$5) RETURNING *",
+      [name, email, hashedPassword, "student",regNo]
     );
-
+    const { password: pw, ...safeUser } = result.rows[0];
     res.json({
       success: true,
       user: result.rows[0],
