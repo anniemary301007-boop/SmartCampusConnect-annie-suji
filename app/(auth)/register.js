@@ -14,239 +14,112 @@ import {
     View
 } from "react-native";
 
-export default function Register(){
+export default function Register() {
+  const router = useRouter();
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
-const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [regNo, setRegNo] = useState("");
+  const [password, setPassword] = useState("");
 
-const fadeAnim = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1200,
+      useNativeDriver: true
+    }).start();
+  }, []);
 
-const [name,setName] = useState("");
-const [email,setEmail] = useState("");
-const [regNo,setRegNo] = useState("");
-const [password,setPassword] = useState("");
+  const handleSignup = async () => {
+    if (!name || !email || !password) {
+      alert("Please fill all fields");
+      return;
+    }
 
-useEffect(()=>{
-Animated.timing(fadeAnim,{
-toValue:1,
-duration:1200,
-useNativeDriver:true
-}).start();
-},[]);
+    try {
+      const BASE_URL = "https://smart-campus-api-j6dd.onrender.com";
 
-const handleSignup = async () => {
+      const response = await fetch(`${BASE_URL}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password })
+      });
 
-if(!name || !email || !password){
-alert("Please fill all fields");
-return;
-}
+      const data = await response.json();
 
-try{
-const BASE_URL = "https://smart-campus-api-j6dd.onrender.com";
+      if (data.success) {
+        alert("Account Created Successfully 🎉");
+        router.replace("/login");
+      } else {
+        alert("Registration failed: " + (data.message || ""));
+      }
 
-const response = await fetch(`${BASE_URL}/register`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({ name, email, password })
-});
+    } catch (error) {
+      console.log(error);
+      alert("Registration failed: Server error");
+    }
+  };
 
-const data = await response.json();
+  return (
+    <LinearGradient colors={["#2563EB","#1E3A8A"]} style={styles.container}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+          <Animated.View style={{ opacity: fadeAnim }}>
 
-alert("Account Created Successfully 🎉");
+            <View style={styles.header}>
+              <Text style={styles.title}>Create an Account</Text>
+              <Text style={styles.subtitle}>Sign up to access Smart Campus</Text>
+            </View>
 
-router.replace("/login");
+            <View style={styles.card}>
+              <View style={styles.inputBox}>
+                <Ionicons name="person-outline" size={20} color="#555"/>
+                <TextInput placeholder="Full Name" placeholderTextColor="#888" style={styles.input} value={name} onChangeText={setName}/>
+              </View>
 
-}catch(error){
+              <View style={styles.inputBox}>
+                <Ionicons name="mail-outline" size={20} color="#555"/>
+                <TextInput placeholder="Email Address" placeholderTextColor="#888" style={styles.input} value={email} onChangeText={setEmail}/>
+              </View>
 
-console.log(error);
-alert("Registration failed");
+              <View style={styles.inputBox}>
+                <Ionicons name="card-outline" size={20} color="#555"/>
+                <TextInput placeholder="Register Number" placeholderTextColor="#888" style={styles.input} value={regNo} onChangeText={setRegNo}/>
+              </View>
 
-}
+              <View style={styles.inputBox}>
+                <Ionicons name="lock-closed-outline" size={20} color="#555"/>
+                <TextInput placeholder="Create Password" placeholderTextColor="#888" secureTextEntry style={styles.input} value={password} onChangeText={setPassword}/>
+              </View>
 
-};
+              <TouchableOpacity style={styles.signupBtn} onPress={handleSignup}>
+                <Text style={styles.signupText}>Sign Up 🚀</Text>
+              </TouchableOpacity>
 
-return(
+              <Text style={styles.loginLine}>
+                Already have an account?{" "}
+                <Text style={styles.loginLink} onPress={() => router.push("/login")}>Login</Text>
+              </Text>
+            </View>
 
-<LinearGradient
-colors={["#2563EB","#1E3A8A"]}
-style={styles.container}
->
-
-<KeyboardAvoidingView
-style={{flex:1}}
-behavior={Platform.OS === "ios" ? "padding" : "height"}
->
-
-<ScrollView
-contentContainerStyle={{flexGrow:1,justifyContent:"center"}}
-showsVerticalScrollIndicator={false}
-keyboardShouldPersistTaps="handled"
->
-
-<Animated.View style={{opacity:fadeAnim}}>
-
-{/* Header */}
-
-<View style={styles.header}>
-<Text style={styles.title}>Create an Account</Text>
-<Text style={styles.subtitle}>Sign up to access Smart Campus</Text>
-</View>
-
-{/* Signup Card */}
-
-<View style={styles.card}>
-
-{/* Name */}
-
-<View style={styles.inputBox}>
-<Ionicons name="person-outline" size={20} color="#555"/>
-<TextInput
-placeholder="Full Name"
-placeholderTextColor="#888"
-style={styles.input}
-value={name}
-onChangeText={setName}
-/>
-</View>
-
-{/* Email */}
-
-<View style={styles.inputBox}>
-<Ionicons name="mail-outline" size={20} color="#555"/>
-<TextInput
-placeholder="Email Address"
-placeholderTextColor="#888"
-style={styles.input}
-value={email}
-onChangeText={setEmail}
-/>
-</View>
-
-{/* Register Number */}
-
-<View style={styles.inputBox}>
-<Ionicons name="card-outline" size={20} color="#555"/>
-<TextInput
-placeholder="Register Number"
-placeholderTextColor="#888"
-style={styles.input}
-value={regNo}
-onChangeText={setRegNo}
-/>
-</View>
-
-{/* Password */}
-
-<View style={styles.inputBox}>
-<Ionicons name="lock-closed-outline" size={20} color="#555"/>
-<TextInput
-placeholder="Create Password"
-placeholderTextColor="#888"
-secureTextEntry
-style={styles.input}
-value={password}
-onChangeText={setPassword}
-/>
-</View>
-
-{/* Signup Button */}
-
-<TouchableOpacity style={styles.signupBtn} onPress={handleSignup}>
-<Text style={styles.signupText}>Sign Up 🚀</Text>
-</TouchableOpacity>
-
-{/* Login */}
-
-<Text style={styles.loginLine}>
-Already have an account?{" "}
-<Text
-style={styles.loginLink}
-onPress={()=>router.push("/login")}
->
-Login
-</Text>
-</Text>
-
-</View>
-
-</Animated.View>
-
-</ScrollView>
-
-</KeyboardAvoidingView>
-
-</LinearGradient>
-
-);
+          </Animated.View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </LinearGradient>
+  );
 }
 
 const styles = StyleSheet.create({
-
-container:{
-flex:1,
-padding:20
-},
-
-header:{
-alignItems:"center",
-marginBottom:30
-},
-
-title:{
-fontSize:32,
-fontWeight:"bold",
-color:"#fff"
-},
-
-subtitle:{
-color:"#E0E7FF",
-marginTop:6
-},
-
-card:{
-backgroundColor:"#fff",
-padding:25,
-borderRadius:20,
-elevation:8
-},
-
-inputBox:{
-flexDirection:"row",
-alignItems:"center",
-backgroundColor:"#F3F4F6",
-padding:12,
-borderRadius:10,
-marginBottom:15
-},
-
-input:{
-flex:1,
-marginLeft:10
-},
-
-signupBtn:{
-backgroundColor:"#2563EB",
-padding:14,
-borderRadius:10,
-alignItems:"center"
-},
-
-signupText:{
-color:"#fff",
-fontSize:16,
-fontWeight:"bold"
-},
-
-loginLine:{
-textAlign:"center",
-marginTop:15,
-color:"#555"
-},
-
-loginLink:{
-color:"#1E3A8A",
-fontWeight:"bold"
-}
-
+  container:{flex:1,padding:20},
+  header:{alignItems:"center",marginBottom:30},
+  title:{fontSize:32,fontWeight:"bold",color:"#fff"},
+  subtitle:{color:"#E0E7FF",marginTop:6},
+  card:{backgroundColor:"#fff",padding:25,borderRadius:20,elevation:8},
+  inputBox:{flexDirection:"row",alignItems:"center",backgroundColor:"#F3F4F6",padding:12,borderRadius:10,marginBottom:15},
+  input:{flex:1,marginLeft:10},
+  signupBtn:{backgroundColor:"#2563EB",padding:14,borderRadius:10,alignItems:"center"},
+  signupText:{color:"#fff",fontSize:16,fontWeight:"bold"},
+  loginLine:{textAlign:"center",marginTop:15,color:"#555"},
+  loginLink:{color:"#1E3A8A",fontWeight:"bold"}
 });
