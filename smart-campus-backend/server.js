@@ -9,13 +9,11 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "smart_campus",
-  password: "annie",
-  port: 5432,
+  connectionString: "postgresql://postgres:[YOUR-PASSWORD]@db.qdztgcoubtehegsnljek.supabase.co:5432/postgres",
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
-
 app.get("/", (req, res) => {
   res.send("Smart Campus Backend Running");
 });
