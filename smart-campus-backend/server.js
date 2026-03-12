@@ -9,7 +9,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const pool = new Pool({
-  connectionString: "postgresql://postgres:[YOUR-PASSWORD]@db.qdztgcoubtehegsnljek.supabase.co:5432/postgres",
+  connectionString: "postgresql://postgres:Annie@2026Smart@db.qdztgcoubtehegsnljek.supabase.co:5432/postgres",
   ssl: {
     rejectUnauthorized: false,
   },
